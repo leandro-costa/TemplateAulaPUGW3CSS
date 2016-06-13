@@ -1,0 +1,104 @@
+- var titulo = 'Titulo'
+- var assunto = 'Assunto'
+
+doctype html
+html(lang="pt")
+  head
+    block title
+      title Aula
+    meta(name='viewport',content='width=device-width, initial-scale=1')
+    link(rel='stylesheet',href='css/w3.css')
+    link(rel='stylesheet',href='css/w3-theme-teal.css')
+    link(rel='stylesheet',href='css/font-awesome-4.6.3/css/font-awesome.css')
+    script(src='js/jquery.min.js')
+    script(src='js/jquery.w3csspag.js')
+    script(src='js/jquery.w3cssslidetoc.js')
+
+    style.
+        .slide{
+            margin-bottom:45px;
+        }
+        .slide>footer{
+            margin-bottom:45px;
+        }
+
+  body
+    nav.w3-sidenav.w3-hide.w3-white.w3-card-4#toc
+      a.w3-closenav.w3-large.w3-padding-16.w3-dark-grey.w3-closenav(href="javascript:void(0)",onclick="w3_close()") 
+        i.fa.fa-remove.w3-right.fa-2x
+        span.w3-xlarge Menu       
+    #main
+        header.w3-container.w3-theme
+            .w3-navbar
+                a.w3-left.w3-opennav.w3-show
+                    i#open.fa.fa-bars.fa-4x.w3-opennav(onclick="w3_open()",aria-hidden="true")
+                h1.w3-xxlarge(style={display:'inline-block', margin:'2px', 'padding-top':'2px','padding-left':'10px'})  
+                    block subject
+                        span teste
+
+            mixin tableRow(...items)
+              tr
+                each item in items
+                  td= item
+            mixin tableHeader(...items)
+              tr
+                each item in items
+                  th= item
+        block content
+
+
+        footer.w3-container.w3-bottom.w3-center
+            #page-selection
+      
+    script.
+
+        function w3_open() {
+            $("#main").css("margin-left","25%");
+            $(".w3-sidenav").css("width","25%").removeClass("w3-hide").addClass("w3-show");
+            $(".w3-opennav").removeClass("w3-show").addClass("w3-hide");
+        }
+        function w3_close() {
+            $("#main").css("margin-left","0%");
+            $(".w3-sidenav").removeClass("w3-show").addClass("w3-hide");
+            $(".w3-opennav").removeClass("w3-hide").addClass("w3-show");
+        }
+
+        //$(".slide").hide();
+
+        $(".slide").each(function(index) {
+            $(this).attr('data-page-number', index+1).addClass("w3-hide");
+        });
+
+        
+      
+        Toc.init($('#toc'));
+        
+
+        // init w3csspag
+        $('#page-selection').w3csspag({
+            total: $(".slide").length
+        }).on("page", function(event, /* page number here */ num){
+
+            var oldOpen;
+            oldOpen = parseInt("0"+$(".slide.w3-show").attr("data-page-number"),10);
+
+            $(".slide.w3-show").removeClass("w3-animate-right").removeClass("w3-animate-left").removeClass("w3-show").addClass("w3-hide");
+
+            $(".w3-sidenav a[data-page-number="+oldOpen+"]").toggleClass("w3-leftbar");//w3-theme-border
+            $(".w3-sidenav a[data-page-number="+num+"]").toggleClass("w3-leftbar");
+            //$(".slide:visible").attr("data-page-number")
+            
+
+            if(oldOpen > num){
+                $(".slide[data-page-number="+num+"]").addClass("w3-animate-left").removeClass("w3-hide").addClass("w3-show");
+            }else{
+                $(".slide[data-page-number="+num+"]").addClass("w3-animate-right").removeClass("w3-hide").addClass("w3-show");
+            }
+        });
+
+        $('#page-selection').trigger('page', 1);
+
+        
+
+  
+
